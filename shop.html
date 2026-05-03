@@ -1,0 +1,2080 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xiaaa - Import Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: { 50: '#FFF9EB', 100: '#FFF0CC', 200: '#FFE099', 300: '#FFD066', 400: '#F0C85C', 500: '#E2A93B', 600: '#B8882A', 700: '#8A6620', 800: '#5C4415', 900: '#2E220A' },
+              sf: { 50: '#F7F3EC', 100: '#EDE6DA', 200: '#DDD4C4', 300: '#C8BDA8', 400: '#8A7E6E', 500: '#6B6055', 600: '#4A4138', 700: '#302A23', 800: '#1E1A16', 900: '#141210', 950: '#0C0A08' },
+            },
+            fontFamily: { heading: ['Space Grotesk', 'sans-serif'], body: ['DM Sans', 'sans-serif'] },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #ddd4c4 transparent;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ddd4c4;
+        border-radius: 3px;
+      }
+      .sb-link {
+        position: relative;
+        transition: all 0.2s;
+      }
+      .sb-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: #e2a93b;
+        border-radius: 0 2px 2px 0;
+        transition: height 0.25s;
+      }
+      .sb-link:hover::before,
+      .sb-link.active::before {
+        height: 60%;
+      }
+      .sb-link.active {
+        background: rgba(226, 169, 59, 0.1);
+        color: #8a6620;
+      }
+      .gtoggle .gitems {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s;
+      }
+      .gtoggle.open .gitems {
+        max-height: 500px;
+      }
+      .gtoggle .chev {
+        transition: transform 0.3s;
+      }
+      .gtoggle.open .chev {
+        transform: rotate(90deg);
+      }
+      .fade-in {
+        animation: fadeIn 0.3s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .toast-in {
+        animation: tIn 0.4s ease-out;
+      }
+      .toast-out {
+        animation: tOut 0.3s ease-in forwards;
+      }
+      @keyframes tIn {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes tOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+      .mo-overlay {
+        animation: moIn 0.2s;
+      }
+      @keyframes moIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .mo-content {
+        animation: mcIn 0.3s ease-out;
+      }
+      @keyframes mcIn {
+        from {
+          opacity: 0;
+          transform: scale(0.96) translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+      .trow:hover {
+        background: rgba(226, 169, 59, 0.04);
+      }
+      .c-fade {
+        animation: cFade 0.4s ease-out;
+      }
+      @keyframes cFade {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .c-card {
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .c-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      }
+      .c-img {
+        transition: transform 0.5s;
+      }
+      .c-card:hover .c-img {
+        transform: scale(1.08);
+      }
+      .cat-pill {
+        transition: all 0.2s;
+      }
+      .cat-pill.active,
+      .cat-pill:hover {
+        background: #e2a93b;
+        color: #141210;
+        box-shadow: 0 2px 12px rgba(226, 169, 59, 0.3);
+      }
+      .qty-btn {
+        transition: all 0.15s;
+      }
+      .qty-btn:hover {
+        background: #e2a93b;
+        color: #141210;
+      }
+      .img-ph {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(226, 169, 59, 0.4);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      @media (max-width: 1024px) {
+        .admin-sb {
+          transform: translateX(-100%);
+          position: fixed !important;
+          z-index: 50;
+        }
+        .admin-sb.open {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="font-body">
+    <!-- ROLE SWITCHER -->
+    <div id="roleBar" class="fixed top-0 left-0 right-0 z-[100] bg-sf-800 border-b border-sf-600/40 px-4 py-1.5 flex items-center justify-center gap-2">
+      <span class="text-[10px] text-sf-300 uppercase tracking-widest mr-2">Mode:</span>
+      <button onclick="switchRole('admin')" id="btnAdmin" class="px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 bg-brand-500 text-sf-900 shadow-lg shadow-brand-500/20">
+        <i class="fa-solid fa-shield-halved mr-1.5"></i>Admin Panel
+      </button>
+      <button onclick="switchRole('customer')" id="btnCustomer" class="px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-sf-300 hover:text-sf-100">
+        <i class="fa-solid fa-bag-shopping mr-1.5"></i>Customer Store
+      </button>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="hidden pt-9 bg-sf-50 text-sf-800 font-body min-h-screen flex">
+      <aside class="admin-sb w-[250px] min-w-[250px] bg-sf-800 border-r border-sf-600/30 flex flex-col h-screen sticky top-9 transition-transform duration-300 z-50">
+        <div class="px-5 py-4 border-b border-sf-600/30 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20"><i class="fa-solid fa-globe text-sf-900 text-xs"></i></div>
+          <div>
+            <h1 class="font-heading font-bold text-brand-400 tracking-wide text-base">XIAAA</h1>
+            <p class="text-[9px] text-sf-300 tracking-[.2em] uppercase">Admin Panel</p>
+          </div>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-3 px-2.5" id="adminNav">
+          <a href="#" class="sb-link active flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sf-200 hover:text-sf-100 mb-0.5" data-p="dashboard"><i class="fa-solid fa-chart-pie w-5 text-center text-xs"></i>Dashboard</a>
+          <div class="gtoggle open mb-0.5">
+            <button onclick="this.closest('.gtoggle').classList.toggle('open')" class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-[10px] font-semibold text-sf-400 uppercase tracking-wider hover:text-sf-200">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-folder w-5 text-center"></i>Pengaturan</span><i class="fa-solid fa-chevron-right chev text-[9px]"></i>
+            </button>
+            <div class="gitems">
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="categories"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Kategori</a>
+            </div>
+          </div>
+          <div class="gtoggle open mb-0.5">
+            <button onclick="this.closest('.gtoggle').classList.toggle('open')" class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-[10px] font-semibold text-sf-400 uppercase tracking-wider hover:text-sf-200">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-boxes-stacked w-5 text-center"></i>Pembelian Import</span><i class="fa-solid fa-chevron-right chev text-[9px]"></i>
+            </button>
+            <div class="gitems">
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="marketplaces"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Marketplace</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="suppliers"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Supplier</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-400" data-p="exchangeRates"
+                ><span class="w-1 h-1 rounded-full bg-sf-600"></span>Kurs Valas <span class="text-[8px] ml-1"></span
+              ></a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="supplierProducts"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Produk Supplier</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-400" data-p="purchaseOrders"
+                ><span class="w-1 h-1 rounded-full bg-sf-600"></span>Purchase Order <span class="text-[8px] ml-1"></span
+              ></a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-400" data-p="inboundShipments"
+                ><span class="w-1 h-1 rounded-full bg-sf-600"></span>Pengiriman Masuk <span class="text-[8px] ml-1"></span
+              ></a>
+            </div>
+          </div>
+          <div class="gtoggle open mb-0.5">
+            <button onclick="this.closest('.gtoggle').classList.toggle('open')" class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-[10px] font-semibold text-sf-400 uppercase tracking-wider hover:text-sf-200">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-cart-shopping w-5 text-center"></i>Penjualan</span><i class="fa-solid fa-chevron-right chev text-[9px]"></i>
+            </button>
+            <div class="gitems">
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="customers"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Customer</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="products"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Produk Jual</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="warehouses"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Gudang</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="stocks"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Stok</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="customerRequests"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Permintaan Customer</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="orders"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Pesanan</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="payments"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Pembayaran</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="dpRefunds"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Pengembalian DP</a>
+              <a href="#" class="sb-link flex items-center gap-3 pl-10 pr-3 py-1.5 rounded-lg text-sm text-sf-200 hover:text-sf-100" data-p="outboundShipments"><span class="w-1 h-1 rounded-full bg-sf-500"></span>Pengiriman Keluar</a>
+            </div>
+          </div>
+        </nav>
+        <div class="px-4 py-3 border-t border-sf-600/30 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-full bg-brand-600/20 flex items-center justify-center text-brand-400 text-[10px] font-bold">XA</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-medium text-sf-100 truncate">xiaaa_admin</p>
+            <p class="text-[10px] text-sf-400">Administrator</p>
+          </div>
+        </div>
+      </aside>
+      <div class="flex-1 flex flex-col min-h-screen min-w-0">
+        <header class="sticky top-9 z-30 bg-sf-50/80 backdrop-blur-xl border-b border-sf-200/60 px-6 py-2.5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button class="lg:hidden text-sf-500 hover:text-sf-800" onclick="document.querySelector('.admin-sb').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
+            <div>
+              <h2 id="aTitle" class="font-heading font-semibold text-sf-800"></h2>
+              <p id="aSub" class="text-[11px] text-sf-400"></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="relative w-8 h-8 rounded-lg bg-white border border-sf-200 flex items-center justify-center text-sf-500 hover:text-sf-800 transition">
+              <i class="fa-solid fa-bell text-xs"></i><span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] text-white flex items-center justify-center font-bold">3</span>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 text-[10px] font-bold cursor-pointer border border-brand-200">XA</div>
+          </div>
+        </header>
+        <main id="aMain" class="flex-1 p-6 overflow-y-auto"></main>
+      </div>
+    </div>
+
+    <!-- CUSTOMER STORE -->
+    <div id="customerPanel" class="hidden pt-9 bg-sf-50 text-sf-800 min-h-screen font-body">
+      <header class="sticky top-9 z-40 bg-white/80 backdrop-blur-xl border-b border-sf-200/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center"><i class="fa-solid fa-globe text-white text-xs"></i></div>
+            <span class="font-heading font-bold text-sf-800 text-lg tracking-wide">XIAAA</span>
+          </div>
+          <div class="hidden sm:flex flex-1 max-w-md mx-8">
+            <div class="relative w-full">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-sf-400 text-xs"></i
+              ><input
+                type="text"
+                id="cSearch"
+                placeholder="Cari produk import..."
+                class="w-full bg-sf-50 border border-sf-200 rounded-full pl-10 pr-4 py-2 text-sm text-sf-700 placeholder-sf-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition"
+                oninput="filterCProducts()"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="cNav('orders')" class="text-sm text-sf-500 hover:text-brand-600 transition hidden sm:block"><i class="fa-solid fa-receipt mr-1"></i>Pesanan</button>
+            <button onclick="toggleCart()" class="relative w-10 h-10 rounded-full bg-sf-50 border border-sf-200 flex items-center justify-center text-sf-600 hover:text-brand-600 hover:border-brand-500/30 transition">
+              <i class="fa-solid fa-bag-shopping text-sm"></i><span id="cartBadge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-brand-500 rounded-full text-[10px] text-white font-bold flex items-center justify-center">0</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <main id="cMain"></main>
+      <div id="cartOverlay" class="fixed inset-0 z-50 hidden" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px)" onclick="toggleCart()"></div>
+      <div id="cartDrawer" class="fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="px-5 py-4 border-b border-sf-100 flex items-center justify-between">
+          <h3 class="font-heading font-semibold text-sf-800">Keranjang Belanja</h3>
+          <button onclick="toggleCart()" class="w-8 h-8 rounded-lg bg-sf-50 flex items-center justify-center text-sf-500 hover:text-sf-800 transition"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cartItems" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+        <div id="cartFooter" class="border-t border-sf-100 px-5 py-4"></div>
+      </div>
+      <div id="checkoutOverlay" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col mo-content">
+          <div class="px-6 py-4 border-b border-sf-100 flex items-center justify-between">
+            <h3 id="checkoutTitle" class="font-heading font-semibold text-sf-800"></h3>
+            <button onclick="closeCheckout()" class="text-sf-400 hover:text-sf-800 transition"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div id="checkoutBody" class="flex-1 overflow-y-auto px-6 py-5"></div>
+          <div id="checkoutFooter" class="px-6 py-4 border-t border-sf-100 flex items-center justify-end gap-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastBox" class="fixed top-12 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+      /* ========== DATA ========== */
+      var D = {
+        categories: [
+          { id: 1, name: 'Photocard', description: 'Kartu foto artis K-Pop atau anime ukuran standar' },
+          { id: 2, name: 'Lightstick', description: 'Alat glow resmi konser K-Pop' },
+          { id: 3, name: 'Figure / Action Figure', description: 'Miniatur karakter anime atau game' },
+          { id: 4, name: 'Album Official', description: 'Album musik resmi K-Pop' },
+          { id: 5, name: 'Apparel', description: 'Pakaian bertemakan artis atau anime' },
+          { id: 6, name: 'Aksesoris', description: 'Pin, gantungan kunci, topi, dan lainnya' },
+          { id: 7, name: 'Skincare & Kosmetik', description: 'Produk perawatan kulit dari Korea atau Jepang' },
+          { id: 8, name: 'Tas & Dompet', description: 'Tas impor dari China atau Korea' },
+          { id: 9, name: 'Elektronik & Gadget', description: 'Produk elektronik impor dari China' },
+        ],
+        marketplaces: [
+          { id: 1, name: 'Taobao', country: 'China', website_url: 'https://taobao.com', currency: 'CNY', status: 'aktif' },
+          { id: 2, name: 'Gmarket', country: 'Korea Selatan', website_url: 'https://gmarket.co.kr', currency: 'KRW', status: 'aktif' },
+          { id: 3, name: 'Rakuten', country: 'Jepang', website_url: 'https://rakuten.co.jp', currency: 'JPY', status: 'aktif' },
+          { id: 4, name: 'Lazada TH', country: 'Thailand', website_url: 'https://lazada.co.th', currency: 'THB', status: 'aktif' },
+          { id: 5, name: 'Coupang', country: 'Korea Selatan', website_url: 'https://coupang.com', currency: 'KRW', status: 'aktif' },
+          { id: 6, name: 'Alibaba', country: 'China', website_url: 'https://alibaba.com', currency: 'CNY', status: 'aktif' },
+        ],
+        suppliers: [
+          { id: 1, marketplace_id: 1, store_name: 'Toko Tas Import XYZ', country: 'China', category_id: 8, category_name: 'Tas & Dompet', store_url: 'https://taobao.com/store/tasxyz', rating: 4.8, status: 'aktif' },
+          { id: 2, marketplace_id: 2, store_name: 'COSRX Official Store', country: 'Korea Selatan', category_id: 7, category_name: 'Skincare & Kosmetik', store_url: 'https://gmarket.co.kr/cosrx', rating: 4.9, status: 'aktif' },
+          { id: 3, marketplace_id: 3, store_name: 'Gundam Shop Osaka', country: 'Jepang', category_id: 3, category_name: 'Figure / Action Figure', store_url: 'https://rakuten.co.jp/gundam', rating: 4.7, status: 'aktif' },
+          { id: 4, marketplace_id: 4, store_name: 'Thani Herb Co.', country: 'Thailand', category_id: 7, category_name: 'Skincare & Kosmetik', store_url: 'https://lazada.co.th/thaniherb', rating: 4.6, status: 'aktif' },
+          { id: 5, marketplace_id: 5, store_name: 'Fashion Zone KR', country: 'Korea Selatan', category_id: 5, category_name: 'Apparel', store_url: 'https://coupang.com/fashionzone', rating: 4.5, status: 'aktif' },
+          { id: 6, marketplace_id: 6, store_name: 'Tech Gadget SZ', country: 'China', category_id: 9, category_name: 'Elektronik & Gadget', store_url: 'https://alibaba.com/techgadgetsz', rating: 4.4, status: 'aktif' },
+        ],
+        exchangeRates: [
+          { id: 1, currency_code: 'CNY', currency_name: 'Chinese Yuan', rate_to_idr: 2224, recorded_date: '2026-05-03' },
+          { id: 2, currency_code: 'KRW', currency_name: 'Korean Won', rate_to_idr: 10, recorded_date: '2026-05-03' },
+          { id: 3, currency_code: 'JPY', currency_name: 'Japanese Yen', rate_to_idr: 107, recorded_date: '2026-05-03' },
+          { id: 4, currency_code: 'THB', currency_name: 'Thai Baht', rate_to_idr: 437, recorded_date: '2026-05-03' },
+        ],
+        supplierProducts: [
+          { id: 1, supplier_id: 2, category_id: 4, category_name: 'Album Official', product_name: 'BLACKPINK Born Pink Album Digipack', buy_price_original: 28000, currency: 'KRW', buy_price_idr: 280000, stock_minimum: 3 },
+          { id: 2, supplier_id: 3, category_id: 3, category_name: 'Figure / Action Figure', product_name: 'Gundam RX-78 MG 1/100 Ver 3.0', buy_price_original: 3200, currency: 'JPY', buy_price_idr: 342400, stock_minimum: 1 },
+          { id: 3, supplier_id: 1, category_id: 8, category_name: 'Tas & Dompet', product_name: 'Tas Ransel Kulit Sintetis Hitam L', buy_price_original: 85, currency: 'CNY', buy_price_idr: 188540, stock_minimum: 3 },
+          { id: 4, supplier_id: 4, category_id: 7, category_name: 'Skincare & Kosmetik', product_name: 'Sabun Herbal Thani Natural Papaya', buy_price_original: 120, currency: 'THB', buy_price_idr: 52440, stock_minimum: 5 },
+          { id: 5, supplier_id: 5, category_id: 5, category_name: 'Apparel', product_name: 'Lisa Solo Merch Hoodie Black M', buy_price_original: 35000, currency: 'KRW', buy_price_idr: 350000, stock_minimum: 2 },
+          { id: 6, supplier_id: 6, category_id: 9, category_name: 'Elektronik & Gadget', product_name: 'Mouse Wireless Gaming RGB', buy_price_original: 42, currency: 'CNY', buy_price_idr: 93408, stock_minimum: 5 },
+        ],
+        purchaseOrders: [
+          { id: 1, order_date: '2026-05-01', supplier_id: 1, exchange_rate_id: 1, total_buy_price_idr: 942700, status: 'dalam pengiriman', notes: 'Stok reguler tas ransel' },
+          { id: 2, order_date: '2026-05-02', supplier_id: 2, exchange_rate_id: 2, total_buy_price_idr: 840000, status: 'dalam pengiriman', notes: 'Pre-order album BLACKPINK 3 pcs' },
+          { id: 3, order_date: '2026-05-02', supplier_id: 3, exchange_rate_id: 3, total_buy_price_idr: 684800, status: 'sudah tiba', notes: 'Gundam MG 2 pcs' },
+          { id: 4, order_date: '2026-05-03', supplier_id: 4, exchange_rate_id: 4, total_buy_price_idr: 524400, status: 'diproses pabrik', notes: 'Pre-order sabun herbal min 10 pcs' },
+          { id: 5, order_date: '2026-05-03', supplier_id: 5, exchange_rate_id: 2, total_buy_price_idr: 1050000, status: 'menunggu konfirmasi', notes: 'Hoodie Lisa 3 pcs' },
+        ],
+        inboundShipments: [
+          { id: 1, purchase_order_id: 1, tracking_number: 'CN123456789ID', carrier: 'EMS China Post', shipped_date: '2026-05-02', estimated_arrival: '2026-05-14', arrival_date: null, status: 'dalam pengiriman' },
+          { id: 2, purchase_order_id: 2, tracking_number: 'KR987654321ID', carrier: 'Korea Post EMS', shipped_date: '2026-05-03', estimated_arrival: '2026-05-16', arrival_date: null, status: 'dalam pengiriman' },
+          { id: 3, purchase_order_id: 3, tracking_number: 'JP555444333ID', carrier: 'Japan Post EMS', shipped_date: '2026-04-28', estimated_arrival: '2026-05-08', arrival_date: '2026-05-07', status: 'sudah tiba' },
+          { id: 4, purchase_order_id: 4, tracking_number: '-', carrier: '-', shipped_date: null, estimated_arrival: '2026-05-22', arrival_date: null, status: 'diproses pabrik' },
+        ],
+        customers: [
+          { id: 1, user_id: 2, full_name: 'Budi Santoso', phone: '081234567890', address: 'Jl. Merdeka No. 5, Kel. Suka Maju', city: 'Bandung', province: 'Jawa Barat' },
+          { id: 2, user_id: 3, full_name: 'Sari Dewi', phone: '082345678901', address: 'Jl. Mawar No. 12, Kel. Baru', city: 'Surabaya', province: 'Jawa Timur' },
+          { id: 3, user_id: 4, full_name: 'Rendi Pratama', phone: '083456789012', address: 'Jl. Pahlawan No. 7, Kel. Damai', city: 'Jakarta', province: 'DKI Jakarta' },
+          { id: 4, user_id: 5, full_name: 'Lina Marlina', phone: '084567890123', address: 'Jl. Kenanga No. 3, Kel. Sejahtera', city: 'Medan', province: 'Sumatera Utara' },
+          { id: 5, user_id: null, full_name: 'Andi Wijaya', phone: '085678901234', address: 'Jl. Flamboyan No. 22, Kel. Harapan', city: 'Yogyakarta', province: 'DI Yogyakarta' },
+        ],
+        products: [
+          {
+            id: 1,
+            supplier_product_id: 1,
+            category_id: 4,
+            category_name: 'Album Official',
+            product_name: 'BLACKPINK Born Pink Album Digipack',
+            sell_price_idr: 580000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop&q=80',
+          },
+          {
+            id: 2,
+            supplier_product_id: 2,
+            category_id: 3,
+            category_name: 'Figure / Action Figure',
+            product_name: 'Gundam RX-78 MG 1/100 Ver 3.0',
+            sell_price_idr: 780000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1608889335941-32ac5f2041b9?w=400&h=400&fit=crop&q=80',
+          },
+          {
+            id: 3,
+            supplier_product_id: 3,
+            category_id: 8,
+            category_name: 'Tas & Dompet',
+            product_name: 'Tas Ransel Kulit Sintetis Hitam L',
+            sell_price_idr: 350000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&q=80',
+          },
+          {
+            id: 4,
+            supplier_product_id: 4,
+            category_id: 7,
+            category_name: 'Skincare & Kosmetik',
+            product_name: 'Sabun Herbal Thani Natural Papaya',
+            sell_price_idr: 120000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400&h=400&fit=crop&q=80',
+          },
+          {
+            id: 5,
+            supplier_product_id: 5,
+            category_id: 5,
+            category_name: 'Apparel',
+            product_name: 'Lisa Solo Merch Hoodie Black M',
+            sell_price_idr: 650000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=400&fit=crop&q=80',
+          },
+          {
+            id: 6,
+            supplier_product_id: 6,
+            category_id: 9,
+            category_name: 'Elektronik & Gadget',
+            product_name: 'Mouse Wireless Gaming RGB',
+            sell_price_idr: 220000,
+            is_available: 'ya',
+            img: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop&q=80',
+          },
+        ],
+        warehouses: [{ id: 1, name: 'Gudang Utama Xiaaa', address: 'Jl. Kenanga No. 88, Kel. Suka Maju', city: 'Medan', province: 'Sumatera Utara', pic_name: 'Xiaaa', phone: '08xxxxxxxxxx' }],
+        stocks: [
+          { id: 1, product_id: 1, warehouse_id: 1, stock_in: 3, stock_out: 1, stock_available: 2, last_updated: '2026-05-07 09:00:00' },
+          { id: 2, product_id: 2, warehouse_id: 1, stock_in: 2, stock_out: 1, stock_available: 1, last_updated: '2026-05-07 09:05:00' },
+          { id: 3, product_id: 3, warehouse_id: 1, stock_in: 5, stock_out: 2, stock_available: 3, last_updated: '2026-05-07 09:10:00' },
+          { id: 4, product_id: 4, warehouse_id: 1, stock_in: 10, stock_out: 4, stock_available: 6, last_updated: '2026-05-07 09:12:00' },
+          { id: 5, product_id: 5, warehouse_id: 1, stock_in: 3, stock_out: 0, stock_available: 3, last_updated: '2026-05-07 09:15:00' },
+          { id: 6, product_id: 6, warehouse_id: 1, stock_in: 10, stock_out: 2, stock_available: 8, last_updated: '2026-05-07 09:20:00' },
+        ],
+        customerRequests: [
+          {
+            id: 1,
+            customer_id: 1,
+            request_date: '2026-05-01',
+            origin_country: 'China',
+            item_name: 'Tas Ransel Kulit Sintetis Hitam L',
+            category_id: 8,
+            category_name: 'Tas & Dompet',
+            qty: 2,
+            dp_amount_idr: 150000,
+            bank_account: 'BCA 1234567890',
+            status: 'menunggu barang',
+          },
+          {
+            id: 2,
+            customer_id: 2,
+            request_date: '2026-05-02',
+            origin_country: 'Korea Selatan',
+            item_name: 'BLACKPINK Born Pink Album Digipack',
+            category_id: 4,
+            category_name: 'Album Official',
+            qty: 1,
+            dp_amount_idr: 100000,
+            bank_account: 'BCA 1234567890',
+            status: 'menunggu barang',
+          },
+          {
+            id: 3,
+            customer_id: 3,
+            request_date: '2026-05-02',
+            origin_country: 'Jepang',
+            item_name: 'Gundam RX-78 MG 1/100 Ver 3.0',
+            category_id: 3,
+            category_name: 'Figure / Action Figure',
+            qty: 1,
+            dp_amount_idr: 200000,
+            bank_account: 'BRI 0987654321',
+            status: 'siap kirim',
+          },
+          {
+            id: 4,
+            customer_id: 4,
+            request_date: '2026-05-03',
+            origin_country: 'Thailand',
+            item_name: 'Sabun Herbal Thani Natural Papaya',
+            category_id: 7,
+            category_name: 'Skincare & Kosmetik',
+            qty: 3,
+            dp_amount_idr: 50000,
+            bank_account: 'BCA 1234567890',
+            status: 'selesai',
+          },
+          {
+            id: 5,
+            customer_id: 5,
+            request_date: '2026-05-03',
+            origin_country: 'China',
+            item_name: 'Earphone TWS Bluetooth Putih Gloss',
+            category_id: 9,
+            category_name: 'Elektronik & Gadget',
+            qty: 2,
+            dp_amount_idr: 80000,
+            bank_account: 'BCA 1234567890',
+            status: 'dp dikembalikan',
+          },
+        ],
+        orders: [
+          { id: 1, customer_request_id: 1, customer_id: 1, order_date: '2026-05-01', product_id: 3, qty: 2, total_price_idr: 700000, dp_amount_idr: 150000, remaining_payment_idr: 550000, status: 'menunggu barang' },
+          { id: 2, customer_request_id: 2, customer_id: 2, order_date: '2026-05-02', product_id: 1, qty: 1, total_price_idr: 580000, dp_amount_idr: 100000, remaining_payment_idr: 480000, status: 'menunggu barang' },
+          { id: 3, customer_request_id: 3, customer_id: 3, order_date: '2026-05-02', product_id: 2, qty: 1, total_price_idr: 780000, dp_amount_idr: 200000, remaining_payment_idr: 0, status: 'selesai' },
+          { id: 4, customer_request_id: 4, customer_id: 4, order_date: '2026-05-03', product_id: 4, qty: 3, total_price_idr: 360000, dp_amount_idr: 50000, remaining_payment_idr: 0, status: 'selesai' },
+          { id: 5, customer_request_id: 5, customer_id: 5, order_date: '2026-05-03', product_id: 5, qty: 1, total_price_idr: 650000, dp_amount_idr: 80000, remaining_payment_idr: 0, status: 'dp dikembalikan' },
+        ],
+        payments: [
+          { id: 1, order_id: 1, payment_type: 'dp', amount_idr: 150000, payment_date: '2026-05-01', method: 'Transfer BCA', bank_account: 'BCA 1234567890', status: 'diterima' },
+          { id: 2, order_id: 2, payment_type: 'dp', amount_idr: 100000, payment_date: '2026-05-02', method: 'OVO', bank_account: 'OVO 08xxxxxxxxxx', status: 'diterima' },
+          { id: 3, order_id: 3, payment_type: 'dp', amount_idr: 200000, payment_date: '2026-05-02', method: 'Transfer BRI', bank_account: 'BRI 0987654321', status: 'diterima' },
+          { id: 4, order_id: 3, payment_type: 'pelunasan', amount_idr: 580000, payment_date: '2026-05-04', method: 'Transfer BCA', bank_account: 'BCA 1234567890', status: 'diterima' },
+          { id: 5, order_id: 4, payment_type: 'dp', amount_idr: 50000, payment_date: '2026-05-03', method: 'GoPay', bank_account: 'GoPay 08xxxxxxxxxx', status: 'diterima' },
+          { id: 6, order_id: 4, payment_type: 'pelunasan', amount_idr: 310000, payment_date: '2026-05-05', method: 'Transfer BCA', bank_account: 'BCA 1234567890', status: 'diterima' },
+          { id: 7, order_id: 5, payment_type: 'dp', amount_idr: 80000, payment_date: '2026-05-03', method: 'Transfer BCA', bank_account: 'BCA 1234567890', status: 'dikembalikan' },
+        ],
+        dpRefunds: [
+          {
+            id: 1,
+            order_id: 5,
+            customer_id: 5,
+            dp_amount_idr: 80000,
+            refund_date: '2026-05-05',
+            refund_method: 'Transfer BCA',
+            destination_account: 'BCA 9876543210 a/n Andi Wijaya',
+            notes: 'Stok habis dari supplier, DP dikembalikan penuh',
+          },
+        ],
+        outboundShipments: [
+          { id: 1, order_id: 3, tracking_number: 'JTE123456789ID', carrier: 'J&T Express', packed_date: '2026-05-05', shipped_date: '2026-05-06', estimated_arrival: '2026-05-08', status: 'terkirim' },
+          { id: 2, order_id: 4, tracking_number: 'SIC987654321ID', carrier: 'SiCepat', packed_date: '2026-05-06', shipped_date: '2026-05-06', estimated_arrival: '2026-05-07', status: 'terkirim' },
+          { id: 3, order_id: 1, tracking_number: '-', carrier: '-', packed_date: null, shipped_date: null, estimated_arrival: null, status: 'menunggu barang tiba dari supplier' },
+          { id: 4, order_id: 2, tracking_number: '-', carrier: '-', packed_date: null, shipped_date: null, estimated_arrival: null, status: 'menunggu pelunasan dari customer' },
+        ],
+      };
+
+      /* ========== HELPERS ========== */
+      var productOrigin = { 1: 'Korea Selatan', 2: 'Jepang', 3: 'China', 4: 'Thailand', 5: 'Korea Selatan', 6: 'China' };
+      var flagMap = { China: '\u{1F1E8}\u{1F1F3}', 'Korea Selatan': '\u{1F1F0}\u{1F1F7}', Jepang: '\u{1F1EF}\u{1F1F5}', Thailand: '\u{1F1F9}\u{1F1ED}' };
+      function countryFlag(c) {
+        return (flagMap[c] || '') + ' ' + c;
+      }
+      function fmt(n) {
+        return 'Rp ' + Number(n).toLocaleString('id-ID');
+      }
+      function fmtN(n) {
+        return Number(n).toLocaleString('id-ID');
+      }
+      function fmtD(s) {
+        if (!s || s === '-') return '-';
+        return new Date(s).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      function getCN(id) {
+        var c = D.customers.find(function (x) {
+          return x.id === id;
+        });
+        return c ? c.full_name : '-';
+      }
+      function getPN(id) {
+        var p = D.products.find(function (x) {
+          return x.id === id;
+        });
+        return p ? p.product_name : '-';
+      }
+      function getSN(id) {
+        var s = D.suppliers.find(function (x) {
+          return x.id === id;
+        });
+        return s ? s.store_name : '-';
+      }
+      function getStock(id) {
+        var s = D.stocks.find(function (x) {
+          return x.product_id === id;
+        });
+        return s ? s.stock_available : 0;
+      }
+
+      var stMap = {
+        aktif: 'bg-emerald-100 text-emerald-700',
+        nonaktif: 'bg-gray-100 text-gray-600',
+        'dalam pengiriman': 'bg-blue-100 text-blue-700',
+        'sudah tiba': 'bg-emerald-100 text-emerald-700',
+        'diproses pabrik': 'bg-amber-100 text-amber-700',
+        'menunggu konfirmasi': 'bg-purple-100 text-purple-700',
+        'menunggu barang': 'bg-amber-100 text-amber-700',
+        'siap kirim': 'bg-cyan-100 text-cyan-700',
+        selesai: 'bg-emerald-100 text-emerald-700',
+        'dp dikembalikan': 'bg-red-100 text-red-700',
+        terkirim: 'bg-emerald-100 text-emerald-700',
+        diterima: 'bg-emerald-100 text-emerald-700',
+        dikembalikan: 'bg-red-100 text-red-700',
+        ya: 'bg-emerald-100 text-emerald-700',
+        tidak: 'bg-red-100 text-red-700',
+        dp: 'bg-sky-100 text-sky-700',
+        pelunasan: 'bg-amber-100 text-amber-700',
+        'menunggu barang tiba dari supplier': 'bg-amber-100 text-amber-700',
+        'menunggu pelunasan dari customer': 'bg-orange-100 text-orange-700',
+      };
+      function stBadge(s) {
+        return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ' + (stMap[s] || 'bg-gray-100 text-gray-600') + '">' + s + '</span>';
+      }
+
+      function imgError(el) {
+        el.style.display = 'none';
+        var ph = document.createElement('div');
+        ph.className = 'img-ph w-full h-full absolute inset-0 bg-sf-100 text-3xl';
+        ph.innerHTML = '<i class="fa-solid fa-image"></i>';
+        el.parentNode.style.position = 'relative';
+        el.parentNode.appendChild(ph);
+      }
+
+      function toast(msg, type) {
+        type = type || 'success';
+        var c = { success: 'bg-emerald-50 border-emerald-200 text-emerald-700', error: 'bg-red-50 border-red-200 text-red-700', warning: 'bg-amber-50 border-amber-200 text-amber-700', info: 'bg-sky-50 border-sky-200 text-sky-700' };
+        var ic = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-circle', info: 'fa-info-circle' };
+        var el = document.createElement('div');
+        el.className = 'toast-in pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border text-sm shadow-lg ' + c[type];
+        el.innerHTML = '<i class="fa-solid ' + ic[type] + '"></i><span>' + msg + '</span>';
+        document.getElementById('toastBox').appendChild(el);
+        setTimeout(function () {
+          el.classList.remove('toast-in');
+          el.classList.add('toast-out');
+          setTimeout(function () {
+            el.remove();
+          }, 300);
+        }, 3000);
+      }
+
+      /* ========== ROLE SWITCH ========== */
+      var currentRole = 'admin';
+      function switchRole(role) {
+        currentRole = role;
+        document.getElementById('adminPanel').classList.toggle('hidden', role !== 'admin');
+        document.getElementById('customerPanel').classList.toggle('hidden', role !== 'customer');
+        var ba = document.getElementById('btnAdmin'),
+          bc = document.getElementById('btnCustomer');
+        if (role === 'admin') {
+          ba.className = 'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 bg-brand-500 text-sf-900 shadow-lg shadow-brand-500/20';
+          bc.className = 'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-sf-300 hover:text-sf-100';
+        } else {
+          bc.className = 'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 bg-brand-500 text-sf-900 shadow-lg shadow-brand-500/20';
+          ba.className = 'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-sf-300 hover:text-sf-100';
+          cNav('home');
+        }
+      }
+
+      /* ========== ADMIN CONFIG ========== */
+      var aMeta = {
+        dashboard: { t: 'Dashboard', s: 'Ringkasan aktivitas bisnis import' },
+        categories: { t: 'Kategori Produk', s: 'Kelola kategori produk' },
+        marketplaces: { t: 'Marketplace', s: 'Daftar marketplace luar negeri' },
+        suppliers: { t: 'Supplier', s: 'Daftar toko supplier' },
+        exchangeRates: { t: 'Kurs Valas', s: 'Konversi mata uang ke IDR ' },
+        supplierProducts: { t: 'Produk Supplier', s: 'Katalog produk dari supplier' },
+        purchaseOrders: { t: 'Purchase Order', s: 'Pembelian dari supplier ' },
+        inboundShipments: { t: 'Pengiriman Masuk', s: 'Tracking pengiriman dari supplier ' },
+        customers: { t: 'Customer', s: 'Data pelanggan' },
+        products: { t: 'Produk Jual', s: 'Katalog produk untuk dijual' },
+        warehouses: { t: 'Gudang', s: 'Lokasi penyimpanan stok' },
+        stocks: { t: 'Stok Gudang', s: 'Jumlah stok per produk' },
+        customerRequests: { t: 'Permintaan Customer', s: 'Request pre-order dari customer' },
+        orders: { t: 'Pesanan', s: 'Daftar pesanan customer' },
+        payments: { t: 'Pembayaran', s: 'Riwayat pembayaran' },
+        dpRefunds: { t: 'Pengembalian DP', s: 'DP yang dikembalikan' },
+        outboundShipments: { t: 'Pengiriman Keluar', s: 'Tracking ke customer' },
+      };
+
+      /* Hanya tabel ini yang bisa CRUD. Kurs Valas, PO, Pengiriman Masuk = read-only */
+      var crudTables = ['categories', 'marketplaces', 'suppliers', 'supplierProducts', 'customers', 'products'];
+
+      function aCols(id) {
+        var map = {
+          categories: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'name', l: 'Nama' },
+            { k: 'description', l: 'Deskripsi' },
+          ],
+          marketplaces: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'name', l: 'Nama' },
+            {
+              k: 'country',
+              l: 'Negara',
+              r: function (v) {
+                return countryFlag(v);
+              },
+            },
+            { k: 'currency', l: 'Mata Uang' },
+            {
+              k: 'website_url',
+              l: 'Website',
+              r: function (v) {
+                return '<a href="' + v + '" target="_blank" class="text-brand-600 hover:text-brand-700 underline text-xs">' + v.replace('https://', '') + '</a>';
+              },
+            },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          suppliers: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'store_name', l: 'Nama Toko' },
+            {
+              k: 'country',
+              l: 'Negara',
+              r: function (v) {
+                return countryFlag(v);
+              },
+            },
+            { k: 'category_name', l: 'Kategori' },
+            {
+              k: 'rating',
+              l: 'Rating',
+              r: function (v) {
+                return '<span class="text-amber-600"><i class="fa-solid fa-star text-[10px]"></i> ' + v + '</span>';
+              },
+            },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          exchangeRates: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'currency_code', l: 'Kode' },
+            { k: 'currency_name', l: 'Nama' },
+            {
+              k: 'rate_to_idr',
+              l: '1 Unit = IDR',
+              r: function (v) {
+                return fmt(v);
+              },
+            },
+            { k: 'recorded_date', l: 'Tanggal', r: fmtD },
+          ],
+          supplierProducts: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'product_name', l: 'Nama Produk' },
+            {
+              k: 'supplier_id',
+              l: 'Supplier',
+              r: function (v) {
+                var s = D.suppliers.find(function (x) {
+                  return x.id === v;
+                });
+                return s ? s.store_name : '-';
+              },
+            },
+            { k: 'category_name', l: 'Kategori' },
+            {
+              k: 'buy_price_original',
+              l: 'Harga Asli',
+              r: function (v, r) {
+                return fmtN(v) + ' ' + r.currency;
+              },
+            },
+            {
+              k: 'buy_price_idr',
+              l: 'Harga IDR',
+              r: function (v) {
+                return fmt(v);
+              },
+            },
+            { k: 'stock_minimum', l: 'Min. Stok' },
+          ],
+          purchaseOrders: [
+            { k: 'id', l: 'PO#', w: 'w-14' },
+            { k: 'order_date', l: 'Tanggal', r: fmtD },
+            { k: 'supplier_id', l: 'Supplier', r: getSN },
+            { k: 'total_buy_price_idr', l: 'Total', r: fmt },
+            { k: 'status', l: 'Status', r: stBadge },
+            { k: 'notes', l: 'Catatan' },
+          ],
+          inboundShipments: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            {
+              k: 'purchase_order_id',
+              l: 'PO#',
+              r: function (v) {
+                return 'PO-' + String(v).padStart(3, '0');
+              },
+            },
+            { k: 'tracking_number', l: 'No. Resi' },
+            { k: 'carrier', l: 'Kurir' },
+            { k: 'shipped_date', l: 'Tgl Kirim', r: fmtD },
+            { k: 'estimated_arrival', l: 'Est. Tiba', r: fmtD },
+            { k: 'arrival_date', l: 'Tgl Tiba', r: fmtD },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          customers: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'full_name', l: 'Nama' },
+            { k: 'phone', l: 'Telepon' },
+            { k: 'city', l: 'Kota' },
+            { k: 'province', l: 'Provinsi' },
+          ],
+          products: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'product_name', l: 'Nama Produk' },
+            { k: 'category_name', l: 'Kategori' },
+            { k: 'sell_price_idr', l: 'Harga Jual', r: fmt },
+            { k: 'is_available', l: 'Tersedia', r: stBadge },
+          ],
+          warehouses: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'name', l: 'Nama' },
+            { k: 'city', l: 'Kota' },
+            { k: 'province', l: 'Provinsi' },
+            { k: 'pic_name', l: 'PIC' },
+            { k: 'phone', l: 'Telepon' },
+          ],
+          stocks: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'product_id', l: 'Produk', r: getPN },
+            {
+              k: 'warehouse_id',
+              l: 'Gudang',
+              r: function (v) {
+                var w = D.warehouses.find(function (x) {
+                  return x.id === v;
+                });
+                return w ? w.name : '-';
+              },
+            },
+            { k: 'stock_in', l: 'Masuk' },
+            { k: 'stock_out', l: 'Keluar' },
+            {
+              k: 'stock_available',
+              l: 'Tersedia',
+              r: function (v) {
+                return '<span class="' + (v <= 2 ? 'text-red-600' : 'text-emerald-600') + ' font-semibold">' + v + '</span>';
+              },
+            },
+            { k: 'last_updated', l: 'Update', r: fmtD },
+          ],
+          customerRequests: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'customer_id', l: 'Customer', r: getCN },
+            { k: 'request_date', l: 'Tanggal', r: fmtD },
+            {
+              k: 'origin_country',
+              l: 'Asal',
+              r: function (v) {
+                return countryFlag(v);
+              },
+            },
+            { k: 'item_name', l: 'Item' },
+            { k: 'category_name', l: 'Kategori' },
+            { k: 'qty', l: 'Qty' },
+            { k: 'dp_amount_idr', l: 'DP', r: fmt },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          orders: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            { k: 'order_date', l: 'Tanggal', r: fmtD },
+            { k: 'customer_id', l: 'Customer', r: getCN },
+            { k: 'product_id', l: 'Produk', r: getPN },
+            { k: 'qty', l: 'Qty' },
+            { k: 'total_price_idr', l: 'Total', r: fmt },
+            { k: 'dp_amount_idr', l: 'DP', r: fmt },
+            {
+              k: 'remaining_payment_idr',
+              l: 'Sisa',
+              r: function (v) {
+                return v > 0 ? '<span class="text-orange-600">' + fmt(v) + '</span>' : '<span class="text-emerald-600">Lunas</span>';
+              },
+            },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          payments: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            {
+              k: 'order_id',
+              l: 'Order',
+              r: function (v) {
+                return 'ORD-' + String(v).padStart(3, '0');
+              },
+            },
+            { k: 'payment_type', l: 'Tipe', r: stBadge },
+            { k: 'amount_idr', l: 'Jumlah', r: fmt },
+            { k: 'payment_date', l: 'Tanggal', r: fmtD },
+            { k: 'method', l: 'Metode' },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+          dpRefunds: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            {
+              k: 'order_id',
+              l: 'Order',
+              r: function (v) {
+                return 'ORD-' + String(v).padStart(3, '0');
+              },
+            },
+            { k: 'customer_id', l: 'Customer', r: getCN },
+            { k: 'dp_amount_idr', l: 'Nominal', r: fmt },
+            { k: 'refund_date', l: 'Tgl Refund', r: fmtD },
+            { k: 'refund_method', l: 'Metode' },
+            { k: 'destination_account', l: 'Tujuan' },
+            { k: 'notes', l: 'Catatan' },
+          ],
+          outboundShipments: [
+            { k: 'id', l: 'ID', w: 'w-14' },
+            {
+              k: 'order_id',
+              l: 'Order',
+              r: function (v) {
+                return 'ORD-' + String(v).padStart(3, '0');
+              },
+            },
+            { k: 'tracking_number', l: 'No. Resi' },
+            { k: 'carrier', l: 'Kurir' },
+            { k: 'packed_date', l: 'Tgl Pack', r: fmtD },
+            { k: 'shipped_date', l: 'Tgl Kirim', r: fmtD },
+            { k: 'estimated_arrival', l: 'Est. Tiba', r: fmtD },
+            { k: 'status', l: 'Status', r: stBadge },
+          ],
+        };
+        return map[id] || [];
+      }
+
+      function aData(id) {
+        var map = {
+          categories: D.categories,
+          marketplaces: D.marketplaces,
+          suppliers: D.suppliers,
+          exchangeRates: D.exchangeRates,
+          supplierProducts: D.supplierProducts,
+          purchaseOrders: D.purchaseOrders,
+          inboundShipments: D.inboundShipments,
+          customers: D.customers,
+          products: D.products,
+          warehouses: D.warehouses,
+          stocks: D.stocks,
+          customerRequests: D.customerRequests,
+          orders: D.orders,
+          payments: D.payments,
+          dpRefunds: D.dpRefunds,
+          outboundShipments: D.outboundShipments,
+        };
+        return map[id] || [];
+      }
+
+      function aFormFields(id) {
+        var map = {
+          categories: [
+            { k: 'name', l: 'Nama Kategori', t: 'text', req: 1 },
+            { k: 'description', l: 'Deskripsi', t: 'textarea' },
+          ],
+          marketplaces: [
+            { k: 'name', l: 'Nama', t: 'text', req: 1 },
+            { k: 'country', l: 'Negara', t: 'text', req: 1 },
+            { k: 'website_url', l: 'URL', t: 'url' },
+            { k: 'currency', l: 'Mata Uang', t: 'select', opts: ['CNY', 'KRW', 'JPY', 'THB', 'USD'] },
+            { k: 'status', l: 'Status', t: 'select', opts: ['aktif', 'nonaktif'] },
+          ],
+          suppliers: [
+            {
+              k: 'marketplace_id',
+              l: 'Marketplace',
+              t: 'select',
+              opts: D.marketplaces.map(function (x) {
+                return { v: x.id, l: x.name };
+              }),
+            },
+            { k: 'store_name', l: 'Nama Toko', t: 'text', req: 1 },
+            { k: 'country', l: 'Negara', t: 'text', req: 1 },
+            {
+              k: 'category_id',
+              l: 'Kategori',
+              t: 'select',
+              opts: D.categories.map(function (x) {
+                return { v: x.id, l: x.name };
+              }),
+            },
+            { k: 'store_url', l: 'URL Toko', t: 'url' },
+            { k: 'rating', l: 'Rating', t: 'number' },
+            { k: 'status', l: 'Status', t: 'select', opts: ['aktif', 'nonaktif'] },
+          ],
+          supplierProducts: [
+            {
+              k: 'supplier_id',
+              l: 'Supplier',
+              t: 'select',
+              opts: D.suppliers.map(function (x) {
+                return { v: x.id, l: x.store_name };
+              }),
+              req: 1,
+            },
+            {
+              k: 'category_id',
+              l: 'Kategori',
+              t: 'select',
+              opts: D.categories.map(function (x) {
+                return { v: x.id, l: x.name };
+              }),
+              req: 1,
+            },
+            { k: 'product_name', l: 'Nama Produk', t: 'text', req: 1 },
+            { k: 'buy_price_original', l: 'Harga Asli', t: 'number', req: 1 },
+            { k: 'currency', l: 'Mata Uang', t: 'select', opts: ['CNY', 'KRW', 'JPY', 'THB', 'USD'], req: 1 },
+            { k: 'buy_price_idr', l: 'Harga dalam IDR', t: 'number', req: 1 },
+            { k: 'stock_minimum', l: 'Minimum Stok', t: 'number' },
+          ],
+          customers: [
+            { k: 'full_name', l: 'Nama Lengkap', t: 'text', req: 1 },
+            { k: 'phone', l: 'No. Telepon', t: 'text', req: 1 },
+            { k: 'address', l: 'Alamat', t: 'textarea' },
+            { k: 'city', l: 'Kota', t: 'text' },
+            { k: 'province', l: 'Provinsi', t: 'text' },
+          ],
+          products: [
+            {
+              k: 'category_id',
+              l: 'Kategori',
+              t: 'select',
+              opts: D.categories.map(function (x) {
+                return { v: x.id, l: x.name };
+              }),
+            },
+            { k: 'product_name', l: 'Nama Produk', t: 'text', req: 1 },
+            { k: 'sell_price_idr', l: 'Harga Jual (IDR)', t: 'number', req: 1 },
+            { k: 'is_available', l: 'Tersedia', t: 'select', opts: ['ya', 'tidak'] },
+          ],
+        };
+        return map[id] || [];
+      }
+
+      /* ========== ADMIN RENDER ========== */
+      var aCharts = {};
+
+      function aNav(id) {
+        document.getElementById('aTitle').textContent = aMeta[id].t;
+        document.getElementById('aSub').textContent = aMeta[id].s;
+        document.querySelectorAll('.sb-link').forEach(function (l) {
+          l.classList.toggle('active', l.dataset.p === id);
+        });
+        Object.keys(aCharts).forEach(function (k) {
+          aCharts[k].destroy();
+        });
+        aCharts = {};
+        document.getElementById('aMain').innerHTML = id === 'dashboard' ? aDashboard() : aTable(id);
+        if (id === 'dashboard') setTimeout(aInitCharts, 50);
+        document.querySelector('.admin-sb') && document.querySelector('.admin-sb').classList.remove('open');
+      }
+
+      function aKpi(ic, label, val, sub, bg, icCol, bc) {
+        return (
+          '<div class="bg-white border ' +
+          bc +
+          ' rounded-xl p-5 shadow-sm"><div class="flex items-start justify-between"><div><p class="text-[10px] text-sf-400 uppercase tracking-wider font-medium">' +
+          label +
+          '</p><p class="text-2xl font-heading font-bold text-sf-800 mt-1.5" style="font-variant-numeric:tabular-nums">' +
+          val +
+          '</p><p class="text-[11px] text-sf-400 mt-1">' +
+          sub +
+          '</p></div><div class="w-10 h-10 rounded-xl ' +
+          bg +
+          ' flex items-center justify-center ' +
+          icCol +
+          '"><i class="fa-solid ' +
+          ic +
+          '"></i></div></div></div>'
+        );
+      }
+
+      function aDashboard() {
+        var rev = D.orders
+          .filter(function (o) {
+            return o.status !== 'dp dikembalikan';
+          })
+          .reduce(function (s, o) {
+            return s + o.total_price_idr;
+          }, 0);
+        var h = '<div class="fade-in space-y-5">';
+        h += '<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">';
+        h += aKpi('fa-money-bill-trend-up', 'Total Pendapatan', fmt(rev), 'Semua pesanan valid', 'bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
+        h += aKpi(
+          'fa-bag-shopping',
+          'Total Pesanan',
+          D.orders.length,
+          D.orders.filter(function (o) {
+            return o.status === 'menunggu barang';
+          }).length + ' menunggu',
+          'bg-brand-50',
+          'text-brand-600',
+          'border-brand-200',
+        );
+        h += aKpi(
+          'fa-store',
+          'Supplier Aktif',
+          D.suppliers.filter(function (s) {
+            return s.status === 'aktif';
+          }).length,
+          'dari ' + D.marketplaces.length + ' marketplace',
+          'bg-violet-50',
+          'text-violet-600',
+          'border-violet-200',
+        );
+        h += aKpi(
+          'fa-warehouse',
+          'Total Stok',
+          D.stocks.reduce(function (s, x) {
+            return s + x.stock_available;
+          }, 0),
+          'di ' + D.warehouses.length + ' gudang',
+          'bg-sky-50',
+          'text-sky-600',
+          'border-sky-200',
+        );
+        h += '</div>';
+
+        h +=
+          '<div class="grid grid-cols-1 lg:grid-cols-3 gap-4"><div class="lg:col-span-2 bg-white border border-sf-200 rounded-xl p-5 shadow-sm"><h3 class="font-heading font-semibold text-sf-800 mb-3 text-sm">Tren Pesanan & Pendapatan</h3><div class="h-56"><canvas id="aCh1"></canvas></div></div><div class="bg-white border border-sf-200 rounded-xl p-5 shadow-sm"><h3 class="font-heading font-semibold text-sf-800 mb-3 text-sm">Status Pesanan</h3><div class="h-56 flex items-center justify-center"><canvas id="aCh2"></canvas></div></div></div>';
+
+        h +=
+          '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-sf-200 rounded-xl p-5 shadow-sm"><h3 class="font-heading font-semibold text-sf-800 mb-3 text-sm">Stok per Kategori</h3><div class="h-52"><canvas id="aCh3"></canvas></div></div><div class="bg-white border border-sf-200 rounded-xl p-5 shadow-sm"><h3 class="font-heading font-semibold text-sf-800 mb-3 text-sm">Margin per Produk</h3><div class="h-52"><canvas id="aCh4"></canvas></div></div></div>';
+
+        h +=
+          '<div class="grid grid-cols-1 xl:grid-cols-2 gap-4"><div class="bg-white border border-sf-200 rounded-xl overflow-hidden shadow-sm"><div class="px-5 py-3 border-b border-sf-100 flex justify-between items-center"><h3 class="font-heading font-semibold text-sf-800 text-sm">Pesanan Terbaru</h3><button onclick="aNav(\'orders\')" class="text-[11px] text-brand-600 hover:text-brand-700 transition">Lihat semua <i class="fa-solid fa-arrow-right ml-1"></i></button></div><table class="w-full text-sm"><thead><tr class="text-left text-[11px] text-sf-400 border-b border-sf-100"><th class="px-5 py-2.5 font-medium">Customer</th><th class="px-3 py-2.5 font-medium">Produk</th><th class="px-3 py-2.5 font-medium text-right">Total</th><th class="px-5 py-2.5 font-medium">Status</th></tr></thead><tbody>';
+        D.orders.forEach(function (o) {
+          h +=
+            '<tr class="trow border-b border-sf-100/60 last:border-0"><td class="px-5 py-2.5 text-sf-700">' +
+            getCN(o.customer_id) +
+            '</td><td class="px-3 py-2.5 text-sf-400 text-xs max-w-[160px] truncate">' +
+            getPN(o.product_id) +
+            '</td><td class="px-3 py-2.5 text-right text-sf-700 font-medium">' +
+            fmt(o.total_price_idr) +
+            '</td><td class="px-5 py-2.5">' +
+            stBadge(o.status) +
+            '</td></tr>';
+        });
+        h +=
+          '</tbody></table></div><div class="bg-white border border-sf-200 rounded-xl overflow-hidden shadow-sm"><div class="px-5 py-3 border-b border-sf-100 flex justify-between items-center"><h3 class="font-heading font-semibold text-sf-800 text-sm">Pengiriman Aktif</h3><button onclick="aNav(\'inboundShipments\')" class="text-[11px] text-brand-600 hover:text-brand-700 transition">Lihat semua <i class="fa-solid fa-arrow-right ml-1"></i></button></div><table class="w-full text-sm"><thead><tr class="text-left text-[11px] text-sf-400 border-b border-sf-100"><th class="px-5 py-2.5 font-medium">PO#</th><th class="px-3 py-2.5 font-medium">Resi</th><th class="px-3 py-2.5 font-medium">Kurir</th><th class="px-5 py-2.5 font-medium">Status</th></tr></thead><tbody>';
+        D.inboundShipments.forEach(function (s) {
+          h +=
+            '<tr class="trow border-b border-sf-100/60 last:border-0"><td class="px-5 py-2.5 text-sf-700 font-medium">PO-' +
+            String(s.purchase_order_id).padStart(3, '0') +
+            '</td><td class="px-3 py-2.5 text-sf-400 text-xs font-mono">' +
+            s.tracking_number +
+            '</td><td class="px-3 py-2.5 text-sf-400 text-xs">' +
+            s.carrier +
+            '</td><td class="px-5 py-2.5">' +
+            stBadge(s.status) +
+            '</td></tr>';
+        });
+        h += '</tbody></table></div></div></div>';
+        return h;
+      }
+
+      function aTable(id) {
+        var cols = aCols(id),
+          data = aData(id),
+          canCrud = crudTables.indexOf(id) !== -1;
+        var h =
+          '<div class="fade-in space-y-4"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div class="relative flex-1 max-w-sm"><i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-sf-400 text-xs"></i><input type="text" placeholder="Cari..." class="w-full bg-white border border-sf-200 rounded-lg pl-9 pr-4 py-2 text-sm text-sf-700 placeholder-sf-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition" oninput="aFilter(this.value,\'' +
+          id +
+          '\')"></div><div class="flex gap-2">';
+        if (canCrud)
+          h +=
+            '<button onclick="aOpenAdd(\'' +
+            id +
+            '\')" class="px-4 py-2 text-xs font-medium bg-brand-500 text-sf-900 rounded-lg hover:bg-brand-400 transition shadow-lg shadow-brand-500/20"><i class="fa-solid fa-plus mr-1"></i>Tambah</button>';
+        else h += '<span class="px-3 py-2 text-[10px] text-sf-400 bg-sf-100 border border-sf-200 rounded-lg"><i class="fa-solid fa-lock mr-1"></i>Read-only</span>';
+        h +=
+          '</div></div><div class="bg-white border border-sf-200 rounded-xl overflow-hidden shadow-sm"><div class="overflow-x-auto"><table class="w-full text-sm" id="aTbl-' +
+          id +
+          '"><thead><tr class="text-left text-[11px] text-sf-400 border-b border-sf-200 bg-sf-50/80">';
+        cols.forEach(function (c) {
+          h += '<th class="' + (c.w || '') + ' px-5 py-3 font-medium whitespace-nowrap">' + c.l + '</th>';
+        });
+        h +=
+          '<th class="px-5 py-3 font-medium w-20 text-center">Aksi</th></tr></thead><tbody id="aTb-' +
+          id +
+          '">' +
+          aRows(id, cols, data) +
+          '</tbody></table></div><div class="px-5 py-2.5 border-t border-sf-100 flex items-center justify-between text-[11px] text-sf-400"><span>' +
+          data.length +
+          ' data</span></div></div></div>';
+        return h;
+      }
+
+      function aRows(id, cols, data) {
+        var canCrud = crudTables.indexOf(id) !== -1;
+        return data
+          .map(function (row, i) {
+            var cells = cols
+              .map(function (c) {
+                var v = row[c.k];
+                var d = c.r ? c.r(v, row) : v != null ? v : '-';
+                return '<td class="px-5 py-2.5 text-sf-700 whitespace-nowrap max-w-[220px] truncate">' + d + '</td>';
+              })
+              .join('');
+            var act = '<button onclick="aView(\'' + id + "'," + i + ')" class="w-7 h-7 rounded text-sf-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Lihat"><i class="fa-solid fa-eye text-xs"></i></button>';
+            if (canCrud) {
+              act +=
+                '<button onclick="aEdit(\'' +
+                id +
+                "'," +
+                i +
+                ')" class="w-7 h-7 rounded text-sf-400 hover:text-sky-600 hover:bg-sky-50 transition" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="aDel(\'' +
+                id +
+                "'," +
+                i +
+                ')" class="w-7 h-7 rounded text-sf-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>';
+            }
+            return (
+              '<tr class="trow border-b border-sf-100/60 last:border-0" data-s="' +
+              Object.values(row).join(' ').toLowerCase() +
+              '">' +
+              cells +
+              '<td class="px-5 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5">' +
+              act +
+              '</div></td></tr>'
+            );
+          })
+          .join('');
+      }
+
+      function aFilter(q, id) {
+        document.querySelectorAll('#aTb-' + id + ' tr').forEach(function (r) {
+          r.style.display = r.dataset.s.indexOf(q.toLowerCase()) !== -1 ? '' : 'none';
+        });
+      }
+
+      function aModal(title, body, foot) {
+        var mo = document.getElementById('aMo');
+        if (!mo) {
+          mo = document.createElement('div');
+          mo.id = 'aMo';
+          mo.className = 'fixed inset-0 z-[70] hidden items-center justify-center p-4';
+          mo.style.cssText = 'background:rgba(0,0,0,.35);backdrop-filter:blur(4px)';
+          mo.onclick = function (e) {
+            if (e.target === mo) aCloseMo();
+          };
+          document.body.appendChild(mo);
+        }
+        mo.innerHTML =
+          '<div class="mo-content bg-white border border-sf-200 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col"><div class="flex items-center justify-between px-6 py-4 border-b border-sf-100"><h3 class="font-heading font-semibold text-sf-800">' +
+          title +
+          '</h3><button onclick="aCloseMo()" class="text-sf-400 hover:text-sf-800 transition"><i class="fa-solid fa-xmark"></i></button></div><div class="flex-1 overflow-y-auto px-6 py-5">' +
+          body +
+          '</div>' +
+          (foot ? '<div class="px-6 py-4 border-t border-sf-100 flex justify-end gap-3">' + foot + '</div>' : '') +
+          '</div>';
+        mo.classList.remove('hidden');
+        mo.classList.add('flex', 'mo-overlay');
+      }
+      function aCloseMo() {
+        var mo = document.getElementById('aMo');
+        if (mo) {
+          mo.classList.add('hidden');
+          mo.classList.remove('flex', 'mo-overlay');
+        }
+      }
+
+      function aView(id, i) {
+        var cols = aCols(id),
+          row = aData(id)[i];
+        var h =
+          '<div class="space-y-2.5">' +
+          cols
+            .map(function (c) {
+              var v = row[c.k];
+              var d = c.r ? c.r(v, row) : v != null ? v : '-';
+              return '<div class="flex gap-4 py-2 border-b border-sf-100 last:border-0"><span class="text-[11px] text-sf-400 w-32 flex-shrink-0 pt-0.5">' + c.l + '</span><span class="text-sm flex-1 text-sf-700">' + d + '</span></div>';
+            })
+            .join('') +
+          '</div>';
+        aModal('Detail ' + aMeta[id].t, h, '<button onclick="aCloseMo()" class="px-4 py-2 text-xs font-medium bg-sf-100 text-sf-600 rounded-lg hover:bg-sf-200 transition">Tutup</button>');
+      }
+
+      function aOpenAdd(id) {
+        aModal(
+          'Tambah ' + aMeta[id].t,
+          aFormHTML(aFormFields(id), {}),
+          '<button onclick="aCloseMo()" class="px-4 py-2 text-xs font-medium bg-sf-100 text-sf-600 rounded-lg hover:bg-sf-200 transition">Batal</button><button onclick="aSave(\'' +
+            id +
+            '\',-1)" class="px-4 py-2 text-xs font-medium bg-brand-500 text-sf-900 rounded-lg hover:bg-brand-400 transition shadow-lg shadow-brand-500/20">Simpan</button>',
+        );
+      }
+      function aEdit(id, i) {
+        aModal(
+          'Edit ' + aMeta[id].t,
+          aFormHTML(aFormFields(id), aData(id)[i]),
+          '<button onclick="aCloseMo()" class="px-4 py-2 text-xs font-medium bg-sf-100 text-sf-600 rounded-lg hover:bg-sf-200 transition">Batal</button><button onclick="aSave(\'' +
+            id +
+            "'," +
+            i +
+            ')" class="px-4 py-2 text-xs font-medium bg-brand-500 text-sf-900 rounded-lg hover:bg-brand-400 transition shadow-lg shadow-brand-500/20">Update</button>',
+        );
+      }
+
+      function aDel(id, i) {
+        var row = aData(id)[i];
+        var label = row.name || row.product_name || row.store_name || row.full_name || '#' + row.id;
+        aModal(
+          'Konfirmasi Hapus',
+          '<div class="text-center py-4"><div class="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i></div><p class="text-sf-600">Hapus <span class="font-semibold text-sf-800">"' +
+            label +
+            '"</span>?</p><p class="text-xs text-sf-400 mt-2">Tidak dapat dibatalkan.</p></div>',
+          '<button onclick="aCloseMo()" class="px-4 py-2 text-xs font-medium bg-sf-100 text-sf-600 rounded-lg hover:bg-sf-200 transition">Batal</button><button onclick="aDoDel(\'' +
+            id +
+            "'," +
+            i +
+            ')" class="px-4 py-2 text-xs font-medium bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Hapus</button>',
+        );
+      }
+
+      function aFormHTML(ff, data) {
+        return (
+          '<div class="space-y-4">' +
+          ff
+            .map(function (f) {
+              var v = data[f.k] != null ? data[f.k] : '';
+              var req = f.req ? ' required' : '';
+              var inp = '';
+              if (f.t === 'textarea')
+                inp =
+                  '<textarea name="' +
+                  f.k +
+                  '" rows="2" class="w-full bg-sf-50 border border-sf-200 rounded-lg px-4 py-2.5 text-sm text-sf-700 placeholder-sf-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition resize-none"' +
+                  req +
+                  '>' +
+                  v +
+                  '</textarea>';
+              else if (f.t === 'select') {
+                var opts = f.opts;
+                var isObj = opts && opts[0] && typeof opts[0] === 'object';
+                var arr = isObj
+                  ? opts
+                  : opts.map(function (o) {
+                      return { v: o, l: o };
+                    });
+                inp =
+                  '<select name="' +
+                  f.k +
+                  '" class="w-full bg-sf-50 border border-sf-200 rounded-lg px-4 py-2.5 text-sm text-sf-700 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition"' +
+                  req +
+                  '><option value="">-- Pilih --</option>' +
+                  arr
+                    .map(function (o) {
+                      return '<option value="' + o.v + '" ' + (String(v) === String(o.v) ? 'selected' : '') + '>' + o.l + '</option>';
+                    })
+                    .join('') +
+                  '</select>';
+              } else
+                inp =
+                  '<input type="' +
+                  (f.t || 'text') +
+                  '" name="' +
+                  f.k +
+                  '" value="' +
+                  v +
+                  '" class="w-full bg-sf-50 border border-sf-200 rounded-lg px-4 py-2.5 text-sm text-sf-700 placeholder-sf-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition"' +
+                  req +
+                  '>';
+              return '<div><label class="block text-[11px] font-medium text-sf-500 mb-1.5">' + f.l + (f.req ? ' <span class="text-red-500">*</span>' : '') + '</label>' + inp + '</div>';
+            })
+            .join('') +
+          '</div>'
+        );
+      }
+
+      function aSave(id, idx) {
+        var ff = aFormFields(id),
+          data = aData(id);
+        var form = document.querySelector('#aMo .space-y-4');
+        if (!form) return;
+        var inputs = form.querySelectorAll('input,textarea,select');
+        var obj = {};
+        var ok = true;
+        inputs.forEach(function (inp) {
+          if (inp.required && !inp.value.trim()) {
+            inp.classList.add('border-red-400');
+            ok = false;
+          } else inp.classList.remove('border-red-400');
+          var v = inp.value;
+          if (inp.type === 'number') v = Number(v);
+          obj[inp.name] = v;
+        });
+        if (!ok) {
+          toast('Lengkapi field wajib', 'error');
+          return;
+        }
+
+        /* Auto-fill derived fields */
+        if (id === 'suppliers' && obj.category_id) {
+          obj.category_name =
+            (
+              D.categories.find(function (c) {
+                return c.id === Number(obj.category_id);
+              }) || {}
+            ).name || '';
+        }
+        if (id === 'supplierProducts' && obj.category_id) {
+          obj.category_name =
+            (
+              D.categories.find(function (c) {
+                return c.id === Number(obj.category_id);
+              }) || {}
+            ).name || '';
+        }
+        if (id === 'products' && obj.category_id) {
+          obj.category_name =
+            (
+              D.categories.find(function (c) {
+                return c.id === Number(obj.category_id);
+              }) || {}
+            ).name || '';
+        }
+
+        if (idx === -1) {
+          obj.id = data.length
+            ? Math.max.apply(
+                null,
+                data.map(function (d) {
+                  return d.id;
+                }),
+              ) + 1
+            : 1;
+          if (id === 'products') obj.img = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop&q=80';
+          data.push(obj);
+          toast('Data ditambahkan');
+        } else {
+          obj.id = data[idx].id;
+          if (id === 'products') obj.img = data[idx].img;
+          data[idx] = obj;
+          toast('Data diperbarui');
+        }
+        aCloseMo();
+        aNav(id);
+      }
+
+      function aDoDel(id, idx) {
+        aData(id).splice(idx, 1);
+        aCloseMo();
+        toast('Data dihapus');
+        aNav(id);
+      }
+
+      function aInitCharts() {
+        var g = '#E2A93B',
+          ga = 'rgba(226,169,59,.1)',
+          gc = 'rgba(0,0,0,.05)',
+          tc = '#8A7E6E';
+        var c1 = document.getElementById('aCh1');
+        if (c1)
+          aCharts.l = new Chart(c1, {
+            type: 'line',
+            data: {
+              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
+              datasets: [
+                { label: 'Pendapatan (Rp ribu)', data: [1200, 1800, 2400, 2100, 3070], borderColor: g, backgroundColor: ga, fill: true, tension: 0.4, pointBackgroundColor: g, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 },
+                {
+                  label: 'Pesanan',
+                  data: [3, 5, 7, 6, 5],
+                  borderColor: '#5C9CE6',
+                  backgroundColor: 'rgba(92,156,230,.08)',
+                  fill: true,
+                  tension: 0.4,
+                  pointBackgroundColor: '#5C9CE6',
+                  pointBorderColor: '#fff',
+                  pointBorderWidth: 2,
+                  pointRadius: 4,
+                  yAxisID: 'y1',
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { labels: { color: '#6B6055', font: { size: 10, family: 'DM Sans' }, usePointStyle: true, pointStyle: 'circle' } } },
+              scales: {
+                x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+                y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+                y1: { position: 'right', grid: { display: false }, ticks: { color: tc, font: { size: 10 } } },
+              },
+              interaction: { intersect: false, mode: 'index' },
+            },
+          });
+        var c2 = document.getElementById('aCh2');
+        if (c2) {
+          var sc = {};
+          D.orders.forEach(function (o) {
+            sc[o.status] = (sc[o.status] || 0) + 1;
+          });
+          aCharts.d = new Chart(c2, {
+            type: 'doughnut',
+            data: { labels: Object.keys(sc), datasets: [{ data: Object.values(sc), backgroundColor: ['#F59E0B', '#34D399', '#FB7185'], borderColor: '#fff', borderWidth: 3, hoverOffset: 6 }] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '65%',
+              plugins: { legend: { position: 'bottom', labels: { color: '#6B6055', font: { size: 10, family: 'DM Sans' }, usePointStyle: true, pointStyle: 'circle', padding: 12 } } },
+            },
+          });
+        }
+        var c3 = document.getElementById('aCh3');
+        if (c3) {
+          var sb = {};
+          D.stocks.forEach(function (s) {
+            var p = D.products.find(function (x) {
+              return x.id === s.product_id;
+            });
+            if (p) sb[p.category_name] = (sb[p.category_name] || 0) + s.stock_available;
+          });
+          aCharts.b = new Chart(c3, {
+            type: 'bar',
+            data: {
+              labels: Object.keys(sb),
+              datasets: [
+                {
+                  data: Object.values(sb),
+                  backgroundColor: ['rgba(226,169,59,.45)', 'rgba(92,156,230,.45)', 'rgba(52,211,153,.45)', 'rgba(251,113,133,.45)', 'rgba(167,139,250,.45)', 'rgba(244,114,182,.45)'],
+                  borderColor: ['#E2A93B', '#5C9CE6', '#34D399', '#FB7185', '#A78BFA', '#F472B6'],
+                  borderWidth: 1,
+                  borderRadius: 6,
+                  barThickness: 24,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: 'y',
+              plugins: { legend: { display: false } },
+              scales: { x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } }, y: { grid: { display: false }, ticks: { color: '#6B6055', font: { size: 9, family: 'DM Sans' } } } },
+            },
+          });
+        }
+        var c4 = document.getElementById('aCh4');
+        if (c4) {
+          var md = D.products.map(function (p) {
+            var sp = D.supplierProducts.find(function (s) {
+              return s.id === p.supplier_product_id;
+            });
+            var bp = sp ? sp.buy_price_idr : 0;
+            return { n: p.product_name.length > 22 ? p.product_name.substring(0, 22) + '...' : p.product_name, m: p.sell_price_idr - bp, pct: bp > 0 ? Math.round(((p.sell_price_idr - bp) / bp) * 100) : 0 };
+          });
+          aCharts.m = new Chart(c4, {
+            type: 'bar',
+            data: {
+              labels: md.map(function (d) {
+                return d.n;
+              }),
+              datasets: [
+                {
+                  data: md.map(function (d) {
+                    return d.m;
+                  }),
+                  backgroundColor: md.map(function (d) {
+                    return d.pct > 100 ? 'rgba(52,211,153,.45)' : 'rgba(226,169,59,.45)';
+                  }),
+                  borderColor: md.map(function (d) {
+                    return d.pct > 100 ? '#34D399' : '#E2A93B';
+                  }),
+                  borderWidth: 1,
+                  borderRadius: 6,
+                  barThickness: 24,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: 'y',
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    afterLabel: function (ctx) {
+                      return 'Margin: ' + md[ctx.dataIndex].pct + '%';
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  grid: { color: gc },
+                  ticks: {
+                    color: tc,
+                    font: { size: 10 },
+                    callback: function (v) {
+                      return fmt(v);
+                    },
+                  },
+                },
+                y: { grid: { display: false }, ticks: { color: '#6B6055', font: { size: 9, family: 'DM Sans' } } },
+              },
+            },
+          });
+        }
+      }
+
+      document.getElementById('adminNav').addEventListener('click', function (e) {
+        var l = e.target.closest('[data-p]');
+        if (l) {
+          e.preventDefault();
+          aNav(l.dataset.p);
+        }
+      });
+
+      /* ========== CUSTOMER STORE ========== */
+      var cart = [],
+        cCatFilter = 0,
+        cMyOrders = D.orders.slice();
+
+      function cNav(page) {
+        var main = document.getElementById('cMain');
+        if (page === 'home') main.innerHTML = cHome();
+        else if (page === 'orders') main.innerHTML = cOrders();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function cHome() {
+        var cats = D.categories.filter(function (c) {
+          return D.products.some(function (p) {
+            return p.category_id === c.id;
+          });
+        });
+        var h =
+          '<div class="c-fade"><section class="relative overflow-hidden bg-gradient-to-br from-sf-800 via-sf-700 to-sf-900 text-white"><div class="absolute inset-0 opacity-10" style="background-image:url(\'data:image/svg+xml,<svg width=60 height=60 xmlns=%22http://www.w3.org/2000/svg%22><circle cx=30 cy=30 r=1 fill=%22white%22/></svg>\');background-size:60px 60px"></div><div class="absolute top-10 right-10 w-72 h-72 bg-brand-500/20 rounded-full blur-[100px]"></div><div class="absolute bottom-0 left-10 w-56 h-56 bg-cyan-500/15 rounded-full blur-[80px]"></div><div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center"><p class="text-brand-400 text-xs font-semibold tracking-[.25em] uppercase mb-3">Import Specialist</p><h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4">Temukan Produk<br class="sm:hidden"> Import Favoritmu</h1><p class="text-sf-300 text-sm sm:text-base max-w-xl mx-auto mb-8">K-Pop, Anime, Skincare, Fashion langsung dari Korea, Jepang, China, dan Thailand.</p><div class="sm:hidden mb-6"><div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sf-400 text-sm"></i><input type="text" placeholder="Cari produk..." class="w-full bg-white/10 border border-white/20 rounded-full pl-11 pr-4 py-3 text-white placeholder-sf-400 focus:outline-none focus:border-brand-500 transition" oninput="document.getElementById(\'cSearch\').value=this.value;filterCProducts()"></div></div><div class="flex items-center justify-center gap-6 text-sm text-sf-300"><span><i class="fa-solid fa-shield-halved text-brand-400 mr-1.5"></i>100% Original</span><span><i class="fa-solid fa-truck text-brand-400 mr-1.5"></i>Pre-order</span><span class="hidden sm:inline"><i class="fa-solid fa-rotate-left text-brand-400 mr-1.5"></i>DP Refundable</span></div></div></section>';
+
+        h +=
+          '<section class="max-w-6xl mx-auto px-4 sm:px-6 -mt-5 relative z-10"><div class="flex items-center gap-2 overflow-x-auto pb-2" id="catPills"><button onclick="cCatFilter=0;cRenderProducts()" class="cat-pill active flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white border border-sf-200 text-sf-600 shadow-sm">Semua Produk</button>';
+        cats.forEach(function (c) {
+          h += '<button onclick="cCatFilter=' + c.id + ';cRenderProducts()" class="cat-pill flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white border border-sf-200 text-sf-600 shadow-sm">' + c.name + '</button>';
+        });
+        h += '</div></section>';
+
+        h +=
+          '<section class="max-w-6xl mx-auto px-4 sm:px-6 py-10"><div class="flex items-center justify-between mb-6"><h2 class="font-heading font-bold text-sf-800 text-lg">Katalog Produk</h2><span class="text-xs text-sf-400" id="cProdCount"></span></div><div id="cProdGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div><div id="cNoProd" class="hidden text-center py-16"><i class="fa-solid fa-box-open text-4xl text-sf-300 mb-3"></i><p class="text-sf-400">Tidak ada produk ditemukan</p></div></section>';
+
+        h +=
+          '<section class="bg-white border-t border-sf-100"><div class="max-w-6xl mx-auto px-4 sm:px-6 py-12"><h2 class="font-heading font-bold text-sf-800 text-lg text-center mb-8">Cara Pesan di Xiaaa</h2><div class="grid grid-cols-1 sm:grid-cols-4 gap-6">';
+        [
+          { i: 'fa-magnifying-glass', t: 'Pilih Produk', d: 'Jelajahi katalog dan pilih produk' },
+          { i: 'fa-bag-shopping', t: 'Masukkan Keranjang', d: 'Tambahkan ke keranjang belanja' },
+          { i: 'fa-credit-card', t: 'Bayar DP', d: 'Bayar uang muka untuk konfirmasi' },
+          { i: 'fa-truck', t: 'Terima Barang', d: 'Dikirim setelah barang tiba dan lunas' },
+        ].forEach(function (s, i) {
+          h +=
+            '<div class="text-center"><div class="w-12 h-12 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center mx-auto mb-3 text-brand-600"><i class="fa-solid ' +
+            s.i +
+            '"></i></div><div class="text-[10px] text-brand-500 font-bold mb-1">LANGKAH ' +
+            (i + 1) +
+            '</div><h3 class="font-heading font-semibold text-sf-800 text-sm mb-1">' +
+            s.t +
+            '</h3><p class="text-xs text-sf-400 leading-relaxed">' +
+            s.d +
+            '</p></div>';
+        });
+        h += '</div></div></section></div>';
+        return h;
+      }
+
+      function cRenderProducts() {
+        var q = (document.getElementById('cSearch') ? document.getElementById('cSearch').value : '').toLowerCase();
+        var filtered = D.products.filter(function (p) {
+          return p.is_available === 'ya';
+        });
+        if (cCatFilter)
+          filtered = filtered.filter(function (p) {
+            return p.category_id === cCatFilter;
+          });
+        if (q)
+          filtered = filtered.filter(function (p) {
+            return p.product_name.toLowerCase().indexOf(q) !== -1 || p.category_name.toLowerCase().indexOf(q) !== -1;
+          });
+        var grid = document.getElementById('cProdGrid'),
+          nope = document.getElementById('cNoProd'),
+          cnt = document.getElementById('cProdCount');
+        if (!grid) return;
+        cnt.textContent = filtered.length + ' produk';
+        document.querySelectorAll('#catPills .cat-pill').forEach(function (btn, i) {
+          btn.classList.toggle(
+            'active',
+            (i === 0 && cCatFilter === 0) ||
+              btn.textContent.trim() ===
+                (
+                  D.categories.find(function (c) {
+                    return c.id === cCatFilter;
+                  }) || {}
+                ).name,
+          );
+        });
+        if (!filtered.length) {
+          grid.innerHTML = '';
+          nope.classList.remove('hidden');
+          return;
+        }
+        nope.classList.add('hidden');
+        grid.innerHTML = filtered
+          .map(function (p, i) {
+            var stk = getStock(p.id),
+              origin = productOrigin[p.id] || '-';
+            return (
+              '<div class="c-card bg-white rounded-2xl border border-sf-200 overflow-hidden shadow-sm c-fade" style="animation-delay:' +
+              i * 60 +
+              'ms"><div class="relative overflow-hidden aspect-square bg-sf-100"><img src="' +
+              p.img +
+              '" alt="' +
+              p.product_name +
+              '" class="c-img w-full h-full object-cover" loading="lazy" onerror="imgError(this)"><div class="absolute top-3 left-3 flex gap-1.5"><span class="px-2 py-0.5 rounded-full bg-white/90 backdrop-blur text-[10px] font-semibold text-sf-700">' +
+              p.category_name +
+              '</span></div><div class="absolute top-3 right-3"><span class="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur text-[10px] text-white">' +
+              countryFlag(origin) +
+              '</span></div>' +
+              (stk <= 2 ? '<div class="absolute bottom-3 left-3"><span class="px-2 py-0.5 rounded-full bg-red-500/90 text-[10px] text-white font-semibold">Stok terbatas: ' + stk + '</span></div>' : '') +
+              '</div><div class="p-4"><h3 class="font-medium text-sf-800 text-sm leading-snug mb-1 line-clamp-2 min-h-[2.5rem]">' +
+              p.product_name +
+              '</h3><p class="text-xs text-sf-400 mb-3">Import dari ' +
+              origin +
+              '</p><div class="flex items-end justify-between"><div><p class="text-lg font-heading font-bold text-brand-600">' +
+              fmt(p.sell_price_idr) +
+              '</p></div><button onclick="addToCart(' +
+              p.id +
+              ')" class="w-10 h-10 rounded-xl bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center transition shadow-lg shadow-brand-500/20"><i class="fa-solid fa-plus text-sm"></i></button></div></div></div>'
+            );
+          })
+          .join('');
+      }
+
+      function filterCProducts() {
+        cRenderProducts();
+      }
+
+      function addToCart(pid) {
+        var ex = cart.find(function (c) {
+          return c.pid === pid;
+        });
+        if (ex) ex.qty++;
+        else cart.push({ pid: pid, qty: 1 });
+        updateCartBadge();
+        toast('Ditambahkan ke keranjang');
+      }
+      function removeFromCart(pid) {
+        cart = cart.filter(function (c) {
+          return c.pid !== pid;
+        });
+        updateCartBadge();
+        renderCart();
+      }
+      function updateCartQty(pid, d) {
+        var it = cart.find(function (c) {
+          return c.pid === pid;
+        });
+        if (!it) return;
+        it.qty = Math.max(1, it.qty + d);
+        renderCart();
+      }
+      function getCartTotal() {
+        return cart.reduce(function (s, c) {
+          var p = D.products.find(function (x) {
+            return x.id === c.pid;
+          });
+          return s + (p ? p.sell_price_idr * c.qty : 0);
+        }, 0);
+      }
+      function getCartCount() {
+        return cart.reduce(function (s, c) {
+          return s + c.qty;
+        }, 0);
+      }
+      function updateCartBadge() {
+        var b = document.getElementById('cartBadge'),
+          n = getCartCount();
+        b.textContent = n;
+        b.classList.toggle('hidden', n === 0);
+        b.classList.toggle('flex', n > 0);
+      }
+
+      function toggleCart() {
+        var o = document.getElementById('cartOverlay'),
+          d = document.getElementById('cartDrawer');
+        if (d.classList.contains('translate-x-full')) {
+          o.classList.remove('hidden');
+          setTimeout(function () {
+            d.classList.remove('translate-x-full');
+          }, 10);
+          renderCart();
+        } else {
+          d.classList.add('translate-x-full');
+          setTimeout(function () {
+            o.classList.add('hidden');
+          }, 300);
+        }
+      }
+
+      function renderCart() {
+        var items = document.getElementById('cartItems'),
+          foot = document.getElementById('cartFooter');
+        if (!cart.length) {
+          items.innerHTML =
+            '<div class="text-center py-16"><i class="fa-solid fa-bag-shopping text-4xl text-sf-200 mb-3"></i><p class="text-sf-400 text-sm">Keranjang masih kosong</p><button onclick="toggleCart()" class="mt-4 text-sm text-brand-600 hover:text-brand-700 font-medium">Mulai Belanja</button></div>';
+          foot.innerHTML = '';
+          return;
+        }
+        items.innerHTML = cart
+          .map(function (c) {
+            var p = D.products.find(function (x) {
+              return x.id === c.pid;
+            });
+            if (!p) return '';
+            return (
+              '<div class="flex gap-3 bg-sf-50 rounded-xl p-3"><img src="' +
+              p.img +
+              '" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" onerror="imgError(this)"><div class="flex-1 min-w-0"><p class="text-sm font-medium text-sf-800 truncate">' +
+              p.product_name +
+              '</p><p class="text-sm font-heading font-bold text-brand-600 mt-0.5">' +
+              fmt(p.sell_price_idr) +
+              '</p><div class="flex items-center justify-between mt-2"><div class="flex items-center gap-0 border border-sf-200 rounded-lg overflow-hidden"><button onclick="updateCartQty(' +
+              p.id +
+              ',-1)" class="qty-btn w-7 h-7 flex items-center justify-center text-sf-500 text-xs"><i class="fa-solid fa-minus"></i></button><span class="w-8 h-7 flex items-center justify-center text-xs font-semibold text-sf-800 border-x border-sf-200">' +
+              c.qty +
+              '</span><button onclick="updateCartQty(' +
+              p.id +
+              ',1)" class="qty-btn w-7 h-7 flex items-center justify-center text-sf-500 text-xs"><i class="fa-solid fa-plus"></i></button></div><button onclick="removeFromCart(' +
+              p.id +
+              ')" class="text-sf-400 hover:text-red-500 transition text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div>'
+            );
+          })
+          .join('');
+        foot.innerHTML =
+          '<div class="space-y-3"><div class="flex justify-between text-sm"><span class="text-sf-400">Total (' +
+          getCartCount() +
+          ' item)</span><span class="font-heading font-bold text-sf-800">' +
+          fmt(getCartTotal()) +
+          '</span></div><button onclick="toggleCart();openCheckout()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm rounded-xl transition shadow-lg shadow-brand-500/20">Pesan Sekarang</button></div>';
+      }
+
+      var coStep = 0;
+      function openCheckout() {
+        if (!cart.length) return;
+        coStep = 1;
+        renderCheckout();
+        var o = document.getElementById('checkoutOverlay');
+        o.classList.remove('hidden');
+        o.classList.add('flex', 'mo-overlay');
+      }
+      function closeCheckout() {
+        var o = document.getElementById('checkoutOverlay');
+        o.classList.add('hidden');
+        o.classList.remove('flex', 'mo-overlay');
+        if (coStep === 3) {
+          cart = [];
+          updateCartBadge();
+        }
+      }
+      document.getElementById('checkoutOverlay').addEventListener('click', function (e) {
+        if (e.target === document.getElementById('checkoutOverlay')) closeCheckout();
+      });
+
+      function renderCheckout() {
+        var title = document.getElementById('checkoutTitle'),
+          body = document.getElementById('checkoutBody'),
+          foot = document.getElementById('checkoutFooter');
+        var total = getCartTotal(),
+          dpPct = 30,
+          dpAmt = Math.round((total * dpPct) / 100),
+          remaining = total - dpAmt;
+
+        if (coStep === 1) {
+          title.textContent = 'Data Pengiriman';
+          var h =
+            '<div class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-medium text-sf-500 mb-1">Nama Lengkap <span class="text-red-500">*</span></label><input type="text" id="coName" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Nama penerima"></div><div><label class="block text-xs font-medium text-sf-500 mb-1">No. Telepon <span class="text-red-500">*</span></label><input type="text" id="coPhone" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition" placeholder="08xxxxxxxxxx"></div></div><div><label class="block text-xs font-medium text-sf-500 mb-1">Alamat Lengkap <span class="text-red-500">*</span></label><textarea id="coAddr" rows="2" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition resize-none" placeholder="Jl. ..."></textarea></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-medium text-sf-500 mb-1">Kota <span class="text-red-500">*</span></label><input type="text" id="coCity" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Kota"></div><div><label class="block text-xs font-medium text-sf-500 mb-1">Provinsi <span class="text-red-500">*</span></label><input type="text" id="coProv" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Provinsi"></div></div><div><label class="block text-xs font-medium text-sf-500 mb-1">Metode Pembayaran DP</label><select id="coMethod" class="w-full border border-sf-200 rounded-xl px-4 py-2.5 text-sm text-sf-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition"><option>Transfer BCA</option><option>Transfer BRI</option><option>Transfer Mandiri</option><option>OVO</option><option>GoPay</option><option>DANA</option></select></div>';
+          h += '<div class="bg-sf-50 rounded-xl p-4 space-y-2"><p class="text-xs font-semibold text-sf-500 uppercase tracking-wider mb-2">Ringkasan Pesanan</p>';
+          cart.forEach(function (c) {
+            var p = D.products.find(function (x) {
+              return x.id === c.pid;
+            });
+            if (p)
+              h +=
+                '<div class="flex justify-between text-sm"><span class="text-sf-600 truncate flex-1 mr-3">' +
+                p.product_name +
+                ' x' +
+                c.qty +
+                '</span><span class="text-sf-800 font-medium flex-shrink-0">' +
+                fmt(p.sell_price_idr * c.qty) +
+                '</span></div>';
+          });
+          h +=
+            '<div class="border-t border-sf-200 pt-2 mt-2 space-y-1"><div class="flex justify-between text-sm"><span class="text-sf-500">Total</span><span class="font-heading font-bold text-sf-800">' +
+            fmt(total) +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-500">DP ' +
+            dpPct +
+            '%</span><span class="font-medium text-brand-600">' +
+            fmt(dpAmt) +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-500">Sisa Pembayaran</span><span class="text-sf-600">' +
+            fmt(remaining) +
+            '</span></div></div></div></div>';
+          body.innerHTML = h;
+          foot.innerHTML =
+            '<button onclick="closeCheckout()" class="px-5 py-2.5 text-sm font-medium text-sf-500 border border-sf-200 rounded-xl hover:bg-sf-50 transition">Batal</button><button onclick="coValidate()" class="px-5 py-2.5 text-sm font-medium bg-brand-500 text-white rounded-xl hover:bg-brand-600 transition shadow-lg shadow-brand-500/20">Lanjut Bayar DP</button>';
+        } else if (coStep === 2) {
+          var method = (document.getElementById('coMethod') || {}).value || 'Transfer BCA';
+          title.textContent = 'Konfirmasi Pembayaran DP';
+          body.innerHTML =
+            '<div class="text-center space-y-5"><div class="w-16 h-16 rounded-2xl bg-brand-50 border border-brand-200 flex items-center justify-center mx-auto"><i class="fa-solid fa-credit-card text-2xl text-brand-600"></i></div><div><p class="text-sm text-sf-500">Silakan transfer DP sebesar</p><p class="text-3xl font-heading font-bold text-brand-600 mt-1">' +
+            fmt(dpAmt) +
+            '</p><p class="text-xs text-sf-400 mt-1">melalui ' +
+            method +
+            '</p></div><div class="bg-sf-50 rounded-xl p-4 text-left space-y-2"><p class="text-[10px] text-sf-400 uppercase tracking-wider font-semibold">Detail Transfer</p><div class="flex justify-between text-sm"><span class="text-sf-500">Bank</span><span class="text-sf-800 font-medium">BCA</span></div><div class="flex justify-between text-sm"><span class="text-sf-500">No. Rekening</span><span class="text-sf-800 font-mono font-semibold">1234567890</span></div><div class="flex justify-between text-sm"><span class="text-sf-500">Atas Nama</span><span class="text-sf-800 font-medium">Xiaaa Import</span></div><div class="flex justify-between text-sm"><span class="text-sf-500">Jumlah</span><span class="text-sf-800 font-heading font-bold text-brand-600">' +
+            fmt(dpAmt) +
+            '</span></div></div><div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-left"><p class="text-xs text-amber-700"><i class="fa-solid fa-info-circle mr-1"></i>Pesanan akan diproses setelah pembayaran DP dikonfirmasi.</p></div></div>';
+          foot.innerHTML =
+            '<button onclick="coStep=1;renderCheckout()" class="px-5 py-2.5 text-sm font-medium text-sf-500 border border-sf-200 rounded-xl hover:bg-sf-50 transition"><i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali</button><button onclick="coStep=3;renderCheckout()" class="px-5 py-2.5 text-sm font-medium bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition">Saya Sudah Transfer</button>';
+        } else if (coStep === 3) {
+          var name = (document.getElementById('coName') || {}).value || 'Customer';
+          var newOrder = {
+            id: cMyOrders.length
+              ? Math.max.apply(
+                  null,
+                  cMyOrders.map(function (o) {
+                    return o.id;
+                  }),
+                ) + 1
+              : 1,
+            customer_request_id: null,
+            customer_id: 0,
+            order_date: new Date().toISOString().split('T')[0],
+            product_id: cart[0] ? cart[0].pid : 0,
+            qty: cart.reduce(function (s, c) {
+              return s + c.qty;
+            }, 0),
+            total_price_idr: total,
+            dp_amount_idr: dpAmt,
+            remaining_payment_idr: remaining,
+            status: 'menunggu barang',
+          };
+          cMyOrders.unshift(newOrder);
+          title.textContent = 'Pesanan Berhasil';
+          body.innerHTML =
+            '<div class="text-center space-y-5 py-2"><div class="w-20 h-20 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto"><i class="fa-solid fa-check text-3xl text-emerald-500"></i></div><div><p class="text-lg font-heading font-bold text-sf-800">Terima kasih, ' +
+            name +
+            '!</p><p class="text-sm text-sf-400 mt-1">Pesanan kamu sedang diproses</p></div><div class="bg-sf-50 rounded-xl p-4 text-left space-y-2"><div class="flex justify-between text-sm"><span class="text-sf-400">No. Pesanan</span><span class="font-mono font-semibold text-sf-800">XIA-' +
+            String(newOrder.id).padStart(4, '0') +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-400">Total</span><span class="font-heading font-bold text-sf-800">' +
+            fmt(total) +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-400">DP Dibayar</span><span class="text-emerald-600 font-medium">' +
+            fmt(dpAmt) +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-400">Sisa</span><span class="text-sf-600">' +
+            fmt(remaining) +
+            '</span></div><div class="flex justify-between text-sm"><span class="text-sf-400">Status</span>' +
+            stBadge('menunggu barang') +
+            '</div></div></div>';
+          foot.innerHTML =
+            '<button onclick="closeCheckout();cNav(\'orders\')" class="px-5 py-2.5 text-sm font-medium bg-brand-500 text-white rounded-xl hover:bg-brand-600 transition shadow-lg shadow-brand-500/20">Lihat Pesanan Saya</button>';
+        }
+      }
+
+      function coValidate() {
+        var n = (document.getElementById('coName') || {}).value.trim();
+        var ph = (document.getElementById('coPhone') || {}).value.trim();
+        var ad = (document.getElementById('coAddr') || {}).value.trim();
+        var ci = (document.getElementById('coCity') || {}).value.trim();
+        var pr = (document.getElementById('coProv') || {}).value.trim();
+        if (!n || !ph || !ad || !ci || !pr) {
+          toast('Mohon lengkapi semua data pengiriman', 'warning');
+          return;
+        }
+        coStep = 2;
+        renderCheckout();
+      }
+
+      function cOrders() {
+        if (!cMyOrders.length)
+          return '<div class="c-fade max-w-3xl mx-auto px-4 sm:px-6 py-16 text-center"><i class="fa-solid fa-receipt text-5xl text-sf-300 mb-4"></i><h2 class="font-heading font-bold text-sf-800 text-xl mb-2">Belum Ada Pesanan</h2><p class="text-sm text-sf-400 mb-6">Mulai belanja untuk membuat pesanan pertamamu</p><button onclick="cNav(\'home\')" class="px-6 py-2.5 bg-brand-500 text-white font-medium text-sm rounded-xl hover:bg-brand-600 transition">Belanja Sekarang</button></div>';
+        var h =
+          '<div class="c-fade max-w-3xl mx-auto px-4 sm:px-6 py-8"><div class="flex items-center gap-3 mb-6"><button onclick="cNav(\'home\')" class="w-9 h-9 rounded-lg border border-sf-200 flex items-center justify-center text-sf-400 hover:text-sf-800 hover:border-sf-300 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button><h2 class="font-heading font-bold text-sf-800 text-lg">Pesanan Saya</h2></div><div class="space-y-4">';
+        cMyOrders.forEach(function (o) {
+          var p = D.products.find(function (x) {
+            return x.id === o.product_id;
+          });
+          h +=
+            '<div class="bg-white rounded-2xl border border-sf-200 shadow-sm overflow-hidden"><div class="px-5 py-3 bg-sf-50 border-b border-sf-100 flex items-center justify-between"><span class="font-mono text-xs font-semibold text-sf-600">XIA-' +
+            String(o.id).padStart(4, '0') +
+            '</span><div class="flex items-center gap-2">' +
+            stBadge(o.status) +
+            '<span class="text-[11px] text-sf-400">' +
+            fmtD(o.order_date) +
+            '</span></div></div><div class="p-5 flex gap-4">';
+          if (p) h += '<img src="' + p.img + '" class="w-20 h-20 rounded-xl object-cover flex-shrink-0" onerror="imgError(this)">';
+          else h += '<div class="w-20 h-20 rounded-xl bg-sf-100 flex-shrink-0 img-ph text-sf-300"><i class="fa-solid fa-image"></i></div>';
+          h +=
+            '<div class="flex-1 min-w-0"><p class="font-medium text-sf-800 text-sm">' +
+            (p ? p.product_name : 'Produk tidak tersedia') +
+            '</p><p class="text-xs text-sf-400 mt-0.5">Qty: ' +
+            o.qty +
+            '</p><div class="flex items-center gap-4 mt-2"><span class="font-heading font-bold text-brand-600">' +
+            fmt(o.total_price_idr) +
+            '</span>';
+          if (o.dp_amount_idr > 0) h += '<span class="text-xs text-sf-400">DP: ' + fmt(o.dp_amount_idr) + '</span>';
+          if (o.remaining_payment_idr > 0) h += '<span class="text-xs text-orange-600 font-medium">Sisa: ' + fmt(o.remaining_payment_idr) + '</span>';
+          h += '</div></div></div>';
+          if (o.status === 'selesai' || o.status === 'terkirim')
+            h += '<div class="px-5 py-3 border-t border-sf-100 flex justify-end"><button class="px-4 py-2 text-xs font-medium text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition">Beli Lagi</button></div>';
+          h += '</div>';
+        });
+        h += '</div></div>';
+        return h;
+      }
+
+      /* ========== INIT ========== */
+      document.addEventListener('DOMContentLoaded', function () {
+        aNav('dashboard');
+        var obs = new MutationObserver(function () {
+          if (!document.getElementById('customerPanel').classList.contains('hidden')) {
+            setTimeout(cRenderProducts, 50);
+            obs.disconnect();
+          }
+        });
+        obs.observe(document.getElementById('customerPanel'), { attributes: true, attributeFilter: ['class'] });
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          aCloseMo();
+          closeCheckout();
+        }
+      });
+    </script>
+  </body>
+</html>
